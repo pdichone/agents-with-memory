@@ -1,0 +1,41 @@
+# Python-related ignores
+__pycache__/
+*.py[cod]
+.env
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+*.pot
+*.mo
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE-specific ignores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific ignores
+.DS_Store
+Thumbs.db
+
+# Custom directories to ignore
+deepseekv3/
+.cache/
+scrapper-llm/
+test-udemy/
+scraper-llm/
+tests-udy/

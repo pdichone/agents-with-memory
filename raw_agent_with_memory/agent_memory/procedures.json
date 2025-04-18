@@ -1,0 +1,17 @@
+{
+  "Create a simple AI agent with memory": {
+    "name": "Create a simple AI agent with memory",
+    "steps": [
+      "Initialize memory storage (files, database, etc.)",
+      "Create functions to add facts to semantic memory",
+      "Create functions to store conversation history in episodic memory",
+      "Create functions to retrieve relevant memory based on context",
+      "Connect memory system to an LLM like GPT-4o-mini",
+      "Implement a query function that includes memory context in prompts",
+      "Add memory updating after each interaction"
+    ],
+    "description": "Steps to create a basic AI agent with memory capabilities",
+    "timestamp": "2025-04-02T13:15:17.956544",
+    "usage_count": 0
+  }
+}
