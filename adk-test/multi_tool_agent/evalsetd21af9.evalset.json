@@ -1,0 +1,20 @@
+[
+  {
+    "name": "case332e83",
+    "data": [],
+    "initial_session": {
+      "state": {},
+      "app_name": "multi_tool_agent",
+      "user_id": "user"
+    }
+  },
+  {
+    "name": "case1c3aae",
+    "data": [],
+    "initial_session": {
+      "state": {},
+      "app_name": "multi_tool_agent",
+      "user_id": "user"
+    }
+  }
+]

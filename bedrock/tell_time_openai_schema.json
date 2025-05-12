@@ -1,0 +1,45 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Time API",
+    "version": "1.0.0",
+    "description": "API to get the current UTC time."
+  },
+  "paths": {
+    "/get-time": {
+      "post": {
+        "operationId": "get_current_time",
+        "description": "Returns the current UTC time.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response containing the current UTC time.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "current_time": {
+                      "type": "string",
+                      "description": "The current time in UTC."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

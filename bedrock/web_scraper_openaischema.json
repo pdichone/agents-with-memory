@@ -1,0 +1,57 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Webscrape API",
+        "version": "1.0.0",
+        "description": "An API that will take in a URL, then scrape the internet to return the results."
+    },
+    "paths": {
+        "/search": {
+            "post": {
+                "summary": "Scrape content from the provided URL",
+                "description": "Takes in a URL and scrapes content from it.",
+                "operationId": "scrapeContent",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "inputURL": {
+                                        "type": "string",
+                                        "description": "The URL from which to scrape content"
+                                    }
+                                },
+                                "required": [
+                                    "inputURL"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully scraped content from the URL",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "scraped_content": {
+                                            "type": "string",
+                                            "description": "The content scraped from the URL."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The input URL is missing or invalid."
+                    }
+                }
+            }
+        }
+    }
+}
