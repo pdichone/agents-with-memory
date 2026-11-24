@@ -23,8 +23,8 @@ supabase_url = os.environ.get("SUPABASE_URL", "")
 supabase_key = os.environ.get("SUPABASE_KEY", "")
 supabase_client = supabase.create_client(supabase_url, supabase_key)
 
-# Use a stable model that's guaranteed to exist
-model = os.getenv("MODEL_CHOICE", "gpt-3.5-turbo")  # Fallback to a known model
+# Default model (set MODEL_CHOICE=gpt-6-luna in your .env)
+model = os.getenv("MODEL_CHOICE", "gpt-6-luna")
 print(f"Using model===> {model}")
 
 # Initialize OpenAI client
@@ -32,7 +32,15 @@ openai_client = OpenAI()
 
 # Configuration for Memory
 config = {
-    "llm": {"provider": "openai", "config": {"model": model}},
+    "llm": {
+        "provider": "openai",
+        "config": {
+            "model": model,
+            # gpt-6-luna: send reasoning-model params, reasoning off (see HOTFIX-NOTES.md)
+            "is_reasoning_model": True,
+            "reasoning_effort": "none",
+        },
+    },
     "vector_store": {
         "provider": "supabase",
         "config": {
@@ -57,7 +65,7 @@ def chat_with_memories(message: str, user_id: str = "default_user") -> str:
 
     # Retrieve relevant memories
     try:
-        relevant_memories = memory.search(query=message, user_id=user_id, limit=3)
+        relevant_memories = memory.search(query=message, filters={"user_id": user_id}, limit=3)
         formatted_memories = ""
         if (
             relevant_memories

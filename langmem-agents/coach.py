@@ -16,7 +16,8 @@ from langgraph.store.memory import InMemoryStore
 load_dotenv()
 
 # Set up OpenAI client
-llm = ChatOpenAI(model="gpt-4-turbo", temperature=0.2)
+# gpt-6-luna needs reasoning_effort="none" to accept temperature and tool calls
+llm = ChatOpenAI(model="gpt-6-luna", temperature=0.2, reasoning_effort="none")
 # Set up memory store
 store = InMemoryStore()
 

@@ -27,7 +27,11 @@ config = {
     "llm": {
         "provider": "openai",
         "config": {
-            "model": "gpt-4o-mini"  # You can change this to gpt-4o-mini if preferred
+            "model": "gpt-6-luna",
+            # gpt-6-luna: tell mem0 to send reasoning-model params (no temperature/max_tokens)
+            # and turn reasoning off so its internal tool calls are accepted
+            "is_reasoning_model": True,
+            "reasoning_effort": "none",
         },
     }
 }
@@ -183,7 +187,7 @@ class HealthCoachApp:
             system_message=SYSTEM_PROMPT,
             llm_config={
                 "config_list": [
-                    {"model": "gpt-4o-mini", "api_key": os.getenv("OPENAI_API_KEY")}
+                    {"model": "gpt-6-luna", "api_key": os.getenv("OPENAI_API_KEY")}
                 ]
             },
             code_execution_config=False,
@@ -244,7 +248,7 @@ class HealthCoachApp:
             direct_answer = f"Your weight is {profile['weight']} {unit}. "
 
         # Get relevant memories from Mem0
-        memory_results = memory.search(question, user_id=self.user_id, limit=5)
+        memory_results = memory.search(question, filters={"user_id": self.user_id}, limit=5)
 
         # Format memories for inclusion in the prompt
         if memory_results and memory_results.get("results"):

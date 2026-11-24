@@ -15,7 +15,7 @@ supabase_url = os.environ.get("SUPABASE_URL", "")
 supabase_key = os.environ.get("SUPABASE_KEY", "")
 supabase_client = supabase.create_client(supabase_url, supabase_key)
 
-model = os.getenv("MODEL_CHOICE", "")
+model = os.getenv("MODEL_CHOICE", "gpt-6-luna")
 print(f"Using model===> {model}")
 # Streamlit page configuration
 st.set_page_config(
@@ -35,7 +35,15 @@ def get_openai_client():
 @st.cache_resource
 def get_memory():
     config = {
-        "llm": {"provider": "openai", "config": {"model": model}},
+        "llm": {
+            "provider": "openai",
+            "config": {
+                "model": model,
+                # gpt-6-luna: send reasoning-model params, reasoning off (see HOTFIX-NOTES.md)
+                "is_reasoning_model": True,
+                "reasoning_effort": "none",
+            },
+        },
         "vector_store": {
             "provider": "supabase",
             "config": {
@@ -103,7 +111,7 @@ def sign_out():
 # Health Coach chat function with memory
 def chat_with_health_coach(message, user_id):
     # Retrieve relevant memories
-    relevant_memories = memory.search(query=message, user_id=user_id, limit=5)
+    relevant_memories = memory.search(query=message, filters={"user_id": user_id}, limit=5)
 
     # Format memories for inclusion in the prompt
     formatted_memories = ""
@@ -277,7 +285,7 @@ with st.sidebar:
                     else:
                         # Alternative approach if memory.clear is not available
                         # Use the search and delete approach
-                        memories = memory.search(query="*", user_id=user.id, limit=1000)
+                        memories = memory.search(query="*", filters={"user_id": user.id}, limit=1000)
                         if memories and "results" in memories:
                             # Log information for debugging
                             st.write(

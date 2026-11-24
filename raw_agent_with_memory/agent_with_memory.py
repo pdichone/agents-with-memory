@@ -212,7 +212,7 @@ class AgentMemory:
 
 
 class OpenAIAgent:
-    """AI agent using OpenAI's GPT-4o-mini with memory capabilities."""
+    """AI agent using OpenAI's gpt-6-luna with memory capabilities."""
 
     def __init__(self, api_key: str = None, memory_dir: str = "./agent_memory"):
         """Initialize the agent with an OpenAI API key and memory system."""
@@ -220,7 +220,7 @@ class OpenAIAgent:
             api_key  # If None, the OpenAI client will use OPENAI_API_KEY env var
         )
         self.memory = AgentMemory(memory_dir)
-        self.model = "gpt-4o-mini"  # You can change this to "gpt-4o" for the full model
+        self.model = "gpt-6-luna"
 
         # Add some basic facts about the agent itself
         self.memory.add_fact("I am an AI assistant with memory capabilities.")
@@ -271,7 +271,11 @@ your general knowledge. Always be helpful, accurate, and conversational."""
 
             client = OpenAI()
             completion = client.chat.completions.create(
-                model=self.model, messages=messages, temperature=0.7, max_tokens=1000
+                model=self.model,
+                messages=messages,
+                temperature=0.7,
+                max_completion_tokens=1000,  # newer models reject max_tokens
+                reasoning_effort="none",  # gpt-6-luna needs this to accept temperature
             )
             response_text = completion.choices[0].message.content
 

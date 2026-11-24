@@ -1,4 +1,5 @@
 # Import core components
+from langchain.chat_models import init_chat_model
 from langgraph.prebuilt import create_react_agent
 from langgraph.store.memory import InMemoryStore
 from langmem import create_manage_memory_tool, create_search_memory_tool
@@ -12,10 +13,13 @@ store = InMemoryStore(
     }
 )
 
+# gpt-6-luna needs reasoning_effort="none" for tool calls, so we build the model object
+llm = init_chat_model("openai:gpt-6-luna", reasoning_effort="none")
+
 # Create an agent with memory capabilities
 agent = create_react_agent(
     # "anthropic:claude-3-5-sonnet-latest",
-    "openai:gpt-4o-mini",
+    llm,
     tools=[
         # Memory tools use LangGraph's BaseStore for persistence (4)
         create_manage_memory_tool(namespace=("memories",)),

@@ -16,7 +16,8 @@ from mem0 import AsyncMemoryClient
 load_dotenv()
 
 # Set up OpenAI client
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+# gpt-6-luna needs reasoning_effort="none" to accept temperature and tool calls
+llm = ChatOpenAI(model="gpt-6-luna", temperature=0.2, reasoning_effort="none")
 
 # Set up Mem0 client
 memory_client = AsyncMemoryClient(api_key=os.getenv("MEM0_API_KEY"))
@@ -52,10 +53,9 @@ async def search_memory(user_id, query):
     Search for relevant memories in Mem0
     """
     try:
-        memories = await memory_client.search(
-            query, user_id=user_id, output_format="v1.1", version="v2"
-        )
-        return memories
+        # mem0 2.x: pass the user via filters; results come back as {"results": [...]}
+        memories = await memory_client.search(query, filters={"user_id": user_id})
+        return memories.get("results", []) if isinstance(memories, dict) else memories
     except Exception as e:
         print(f"⚠️ Memory search error: {str(e)}")
         return []
@@ -106,6 +106,8 @@ async def run_interactive_health_coach():
             ):  # Show top 3 memories for brevity
                 if "message" in item and "content" in item["message"]:
                     print(f"  • Memory {idx+1}: {item['message']['content'][:100]}...")
+                elif "memory" in item:  # mem0 2.x result shape
+                    print(f"  • Memory {idx+1}: {item['memory'][:100]}...")
         else:
             print("📭 No relevant memories found.")
 
@@ -117,6 +119,8 @@ async def run_interactive_health_coach():
                     role = item["message"].get("role", "unknown")
                     content = item["message"].get("content", "")
                     formatted_memories += f"{role}: {content}\n\n"
+                elif "memory" in item:  # mem0 2.x result shape
+                    formatted_memories += f"- {item['memory']}\n"
 
         # Generate response with context
         messages = [

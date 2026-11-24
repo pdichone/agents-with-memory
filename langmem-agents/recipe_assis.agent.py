@@ -19,11 +19,13 @@ store = InMemoryStore(
 )
 
 # Initialize the LLM
-llm = init_chat_model("openai:gpt-4o-mini", temperature=0.2)
+# gpt-6-luna needs reasoning_effort="none" to accept temperature and tool calls
+llm = init_chat_model("openai:gpt-6-luna", temperature=0.2, reasoning_effort="none")
 
 # Create memory manager to extract memories from conversations
+# Reuse the same model object (the manager extracts memories with tool calls)
 memory_manager = create_memory_store_manager(
-    "openai:gpt-4o-mini",
+    llm,
     namespace=("food_preferences",),
 )
 

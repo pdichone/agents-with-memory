@@ -39,7 +39,8 @@ class State(TypedDict):
 
 
 # Initialize the language model
-llm = init_chat_model("openai:gpt-4o-mini")
+# gpt-6-luna needs reasoning_effort="none" to accept temperature and tool calls
+llm = init_chat_model("openai:gpt-6-luna", reasoning_effort="none")
 
 
 # Define Router for message classification
@@ -162,7 +163,7 @@ tools = [send_response, create_support_ticket, manage_memory, search_memory]
 # Create the response agent
 response_agent = create_react_agent(
     # "anthropic:claude-3-5-sonnet-latest",
-    "openai:gpt-4o-mini",
+    llm,  # same gpt-6-luna model object (needs reasoning_effort="none" for tools)
     tools=tools,
     prompt=create_prompt,
     store=store,  # Pass the store to ensure memory functions work

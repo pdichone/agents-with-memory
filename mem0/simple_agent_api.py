@@ -58,7 +58,8 @@ async def main():
 
     query = "What do you know about alex?"
 
-    mem = await client.search(query, user_id="alex", output_format="v1.1", version="v2")
+    # mem0 2.x: pass the user via filters
+    mem = await client.search(query, filters={"user_id": "alex"})
     print("Memory Search Results:")
     print(json.dumps(mem, indent=2))
 

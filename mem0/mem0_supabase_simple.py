@@ -9,7 +9,12 @@ load_dotenv()
 config = {
     "llm": {
         "provider": "openai",
-        "config": {"model": os.getenv("MODEL_CHOICE", "gpt-4o-mini")},
+        "config": {
+            "model": os.getenv("MODEL_CHOICE", "gpt-6-luna"),
+            # gpt-6-luna: send reasoning-model params, reasoning off (see HOTFIX-NOTES.md)
+            "is_reasoning_model": True,
+            "reasoning_effort": "none",
+        },
     },
     "vector_store": {
         "provider": "supabase",
@@ -26,7 +31,7 @@ memory = Memory.from_config(config)
 
 def chat_with_memories(message: str, user_id: str = "default_user") -> str:
     # Retrieve relevant memories
-    relevant_memories = memory.search(query=message, user_id=user_id, limit=3)
+    relevant_memories = memory.search(query=message, filters={"user_id": user_id}, limit=3)
     memories_str = "\n".join(
         f"- {entry['memory']}" for entry in relevant_memories["results"]
     )
@@ -38,7 +43,7 @@ def chat_with_memories(message: str, user_id: str = "default_user") -> str:
         {"role": "user", "content": message},
     ]
     response = openai_client.chat.completions.create(
-        model="gpt-4o-mini", messages=messages
+        model="gpt-6-luna", messages=messages
     )
     assistant_response = response.choices[0].message.content
 
